@@ -2,7 +2,7 @@
 <Project>
   <ProjectOutputs>
     <ProjectOutput>
-      <FullPath>C:\Users\aleksandr.mamedov\projects\network-learn\ClientServer\Server\x64\Debug\Server.exe</FullPath>
+      <FullPath>C:\Users\aleksandr.mamedov\projects\network-learn\client-server\Server\x64\Debug\Server.exe</FullPath>
     </ProjectOutput>
   </ProjectOutputs>
   <ContentFiles />

@@ -6,6 +6,34 @@ using namespace std;
 
 #pragma warning(disable: 4996)
 
+SOCKET Connections[100];
+int counter = 0;
+
+void ClientHandler(int index)
+{
+	int msg_size;
+
+	while (true)
+	{
+		recv(Connections[index], (char*)&msg_size, sizeof(int), NULL);
+		char* msg = new char[msg_size + 1];
+		msg[msg_size] = '\0';
+		recv(Connections[index], msg, msg_size, NULL);
+		for (int i = 0; i < counter; i++)
+		{
+			if (i == index)
+			{
+				continue;
+			}
+
+			send(Connections[i], (char*)&msg_size, sizeof(int), NULL);
+			send(Connections[i], msg, msg_size, NULL);
+		}
+
+		delete[] msg;
+	}
+}
+
 int main(int argc, char* argv[])
 {
 	WSAData wsaData;
@@ -26,21 +54,38 @@ int main(int argc, char* argv[])
 	SOCKET socketListen = socket(AF_INET, SOCK_STREAM, NULL);
 	bind(socketListen, (SOCKADDR*)&addr, sizeof(addr));
 
+	cout << "Wait clients connections..." << endl;
+
 	listen(socketListen, SOMAXCONN);
 
 	SOCKET newConn;
-	newConn = accept(socketListen, (SOCKADDR*)&addr, &sizeOfAddr);
+	for (int i = 0; i < 100; i++)
+	{
+		newConn = accept(socketListen, (SOCKADDR*)&addr, &sizeOfAddr);
+		
 
-	if (newConn == 0)
-	{
-		cout << "Error 2\n" << endl;
+		if (newConn == 0)
+		{
+			cout << "Error 2\n" << endl;
+		}
+		else
+		{
+			//cout << "Client " << counter << " connected" << endl;
+			printf("%s %d connected\n", inet_ntoa(addr.sin_addr), addr.sin_port);
+			
+			/*string msg = "Hello. It`s server message";
+			int msg_size = msg.size();
+			send(newConn, (char*)&msg_size, sizeof(int), NULL);
+			send(newConn, msg.c_str(), msg_size, NULL);*/
+
+			Connections[i] = newConn;
+			counter++;
+			CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)ClientHandler, (LPVOID)(i), NULL, NULL);
+		}
 	}
-	else
-	{
-		cout << "Client connected" << endl;
-		char msg[256] = "Hello, I'm server";
-		send(newConn, msg, sizeof(msg), NULL);
-	}
+
+	system("pause");
+	
 
 	return 0;
 }

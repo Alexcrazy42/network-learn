@@ -1,2 +1,3 @@
 ﻿  Server.cpp
-  Server.vcxproj -> C:\Users\aleksandr.mamedov\projects\network-learn\ClientServer\Server\x64\Debug\Server.exe
+C:\Users\aleksandr.mamedov\projects\network-learn\client-server\Server\Server\Server.cpp(83,68): warning C4312: приведение типов: преобразование из "int" в "LPVOID" большего размера
+  Server.vcxproj -> C:\Users\aleksandr.mamedov\projects\network-learn\client-server\Server\x64\Debug\Server.exe

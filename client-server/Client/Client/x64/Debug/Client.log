@@ -1,2 +1,3 @@
 ﻿  Client.cpp
-  Client.vcxproj -> C:\Users\aleksandr.mamedov\projects\network-learn\ClientServer\Client\x64\Debug\Client.exe
+C:\Users\aleksandr.mamedov\projects\network-learn\client-server\Client\Client\Client.cpp(58,16): warning C4267: инициализация: преобразование из "size_t" в "int"; возможна потеря данных
+  Client.vcxproj -> C:\Users\aleksandr.mamedov\projects\network-learn\client-server\Client\x64\Debug\Client.exe

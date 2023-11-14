@@ -2,6 +2,7 @@
 #include <WinSock2.h>
 #include <iostream>
 #include <string>
+#define _WINSOCK_DEPRECATED_NO_WARNINGS
 
 using namespace std;
 
@@ -9,18 +10,45 @@ using namespace std;
 
 SOCKET connection;
 
-void ClientHandler()
+enum Packet 
 {
-	int msg_size;
-	while (true)
+	P_ChatMessage
+};
+
+bool ProcessPacket(Packet packetType)
+{
+	switch (packetType)
 	{
+	case P_ChatMessage:
+	{
+		int msg_size;
 		recv(connection, (char*)&msg_size, sizeof(int), NULL);
 		char* msg = new char[msg_size + 1];
 		msg[msg_size] = '\0';
 		recv(connection, msg, msg_size, NULL);
 		cout << msg << endl;
 		delete[] msg;
+		break;
 	}
+	default:
+		cout << "Unrecognized packet: " << packetType << endl;
+		break;
+	}
+	return true;
+}
+
+void ClientHandler()
+{
+	Packet packetType;
+	while (true)
+	{
+		recv(connection, (char*)&packetType, sizeof(Packet), NULL);
+		if (!ProcessPacket(packetType))
+		{
+			break;
+		}
+	}
+	closesocket(connection);
 }
 
 int main(int argc, char* argv[])
@@ -56,6 +84,8 @@ int main(int argc, char* argv[])
 	{
 		std::getline(std::cin, msg1);
 		int msg_size = msg1.size();
+		Packet packetType = P_ChatMessage;
+		send(connection, (char*)&packetType, sizeof(Packet), NULL);
 		send(connection, (char*)&msg_size, sizeof(int), NULL);
 		send(connection, msg1.c_str(), msg_size, NULL);
 		Sleep(10);
